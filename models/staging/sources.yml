@@ -1,0 +1,34 @@
+version: 2
+
+sources:
+  - name: raw_pbp
+    schema: raw
+    
+    quoting:
+      database: true
+      schema: true
+      identifier: true
+      
+    tables:
+      - name: reg_pbp_2009
+      - name: reg_pbp_2010
+      - name: reg_pbp_2011
+      - name: reg_pbp_2012
+      - name: reg_pbp_2013
+      - name: reg_pbp_2014
+      - name: reg_pbp_2015
+      - name: reg_pbp_2016
+      - name: reg_pbp_2017
+      - name: reg_pbp_2018
+      - name: reg_pbp_2019
+
+      - name: post_pbp_2009
+      - name: post_pbp_2010
+      - name: post_pbp_2011
+      - name: post_pbp_2012
+      - name: post_pbp_2013
+      - name: post_pbp_2014
+      - name: post_pbp_2015
+      - name: post_pbp_2016
+      - name: post_pbp_2017
+      - name: post_pbp_2018

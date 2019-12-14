@@ -1,0 +1,26 @@
+name: 'nfl_dbt'
+version: '1.0'
+
+profile: 'nfl'
+
+source-paths: ["models"]
+analysis-paths: ["analysis"] 
+test-paths: ["tests"]
+data-paths: ["data"]
+macro-paths: ["macros"]
+
+target-path: "target"
+clean-targets:
+    - "target"
+    - "dbt_modules"
+
+models:
+  nfl_dbt:
+      staging:
+          schema: staging
+      analysis:
+          schema: analysis
+  vars:
+      dbt_date:time_zone: 'UTC'
+      incremental_days: 60
+      raw_file_path: '/Users/claus/dev/clausherther/nfl-data-load/'
