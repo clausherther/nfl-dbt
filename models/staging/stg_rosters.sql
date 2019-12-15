@@ -1,18 +1,16 @@
 {{
     config(
-        materialized = 'table',
-        partition_by = 'game_date'
+        materialized = 'ephemeral'
     )
 }}
-{# {%- set years = ['2019']-%} #}
 {%- set pre_years = ['2009','2010','2011','2012','2013','2014','2015','2016','2017','2018','2019']-%}
 {%- set reg_years = ['2009','2010','2011','2012','2013','2014','2015','2016','2017','2018','2019']-%}
 {%- set post_years = ['2009','2010','2011','2012','2013','2014','2015','2016','2017','2018']-%}
 
-with raw_pbp as (
+with raw_roster as (
     {% for year in reg_years %}
 
-    {{ get_play_by_play_data(year, "pre") }}
+    {{ get_roster_data(year, "pre") }}
 
     {% if not loop.last %}
     union all
@@ -23,7 +21,7 @@ with raw_pbp as (
 
     {% for year in reg_years %}
 
-    {{ get_play_by_play_data(year, "reg") }}
+    {{ get_roster_data(year, "reg") }}
 
     {% if not loop.last %}
     union all
@@ -34,7 +32,7 @@ with raw_pbp as (
 
     {% for year in post_years %}
 
-    {{ get_play_by_play_data(year, "post") }}
+    {{ get_roster_data(year, "post") }}
 
     {% if not loop.last %}
     union all
@@ -44,4 +42,4 @@ with raw_pbp as (
 select
     r.*
 from
-    raw_pbp r
+    raw_roster r

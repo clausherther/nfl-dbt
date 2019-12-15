@@ -5,11 +5,23 @@ sources:
     schema: raw
     
     quoting:
-      database: true
-      schema: true
-      identifier: true
+      database: false
+      schema: false
+      identifier: false
       
     tables:
+      - name: pre_pbp_2009
+      - name: pre_pbp_2010
+      - name: pre_pbp_2011
+      - name: pre_pbp_2012
+      - name: pre_pbp_2013
+      - name: pre_pbp_2014
+      - name: pre_pbp_2015
+      - name: pre_pbp_2016
+      - name: pre_pbp_2017
+      - name: pre_pbp_2018
+      - name: pre_pbp_2019
+
       - name: reg_pbp_2009
       - name: reg_pbp_2010
       - name: reg_pbp_2011

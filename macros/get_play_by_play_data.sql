@@ -231,6 +231,7 @@ select
     {{ to_int(season) }} as season_nbr,
     upper('{{ season_type }}') as season_type_code,
     {{ typed_cols }}  
-from {{ source('raw_pbp', season_type ~ '_pbp_' ~ season) }}
+from 
+    {{ source('raw_pbp', season_type ~ '_pbp_' ~ season) }}
 
 {%- endmacro -%}    
