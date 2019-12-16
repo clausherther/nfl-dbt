@@ -5,13 +5,14 @@
 }}
 with game_dates as (
 
-    select
+    select distinct
         season_type_code,
         season_nbr,
         week_nbr,
         game_date 
     from
         {{ ref('stg_games') }}
+    
 
 )
 select
