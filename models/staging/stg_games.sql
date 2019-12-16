@@ -1,6 +1,6 @@
 {{
     config(
-        materialized = 'table'
+        materialized = 'ephemeral'
     )
 }}
 {# {%- set years = ['2019']-%} #}

@@ -1,7 +1,6 @@
 {{
     config(
-        materialized = 'table',
-        partition_by = 'game_date'
+        materialized = 'ephemeral'
     )
 }}
 {# {%- set years = ['2019']-%} #}
