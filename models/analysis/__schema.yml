@@ -1,0 +1,38 @@
+version: 2
+
+models:
+  - name: dates
+    columns:
+    - name: game_date
+      tests:
+      - unique
+
+  - name: games
+    columns:
+    - name: game_id
+      tests:
+      - unique
+
+  - name: players
+    columns:
+    - name: player_id
+      tests:
+      - unique
+
+  - name: plays
+    columns:
+    - name: play_key
+      tests:
+      - unique
+
+  - name: teams_players
+    columns:
+    - name: player_key
+      tests:
+      - unique
+
+  - name: teams
+    columns:
+    - name: team_code
+      tests:
+      - unique
