@@ -6,33 +6,83 @@ models:
     - name: game_date
       tests:
       - unique
+      - not_null
 
   - name: games
     columns:
     - name: game_id
       tests:
       - unique
+      - not_null
 
   - name: players
     columns:
     - name: player_id
       tests:
       - unique
+      - not_null
 
   - name: plays
     columns:
     - name: play_key
       tests:
       - unique
+      - not_null
+
+    - name: play_id
+      tests:
+      - not_null
+
+    - name: game_id
+      tests:
+      - not_null
+      - relationships:
+          to: ref('games')
+          field: game_id
+
+    - name: home_team_code
+      tests:
+      - not_null
+      - relationships:
+          to: ref('teams')
+          field: team_code
+
+    - name: away_team_code
+      tests:
+      - not_null
+      - relationships:
+          to: ref('teams')
+          field: team_code
 
   - name: teams_players
     columns:
     - name: player_key
       tests:
       - unique
+      - not_null
+
+    - name: team_code
+      tests:
+      - not_null
+      - relationships:
+          to: ref('teams')
+          field: team_code
+
+    - name: player_id
+      tests:
+      - not_null
+      - relationships:
+          to: ref('players')
+          field: player_id
 
   - name: teams
     columns:
     - name: team_code
       tests:
       - unique
+      - not_null
+
+    - name: consolidated_team_code
+      tests:
+      - not_null
+
