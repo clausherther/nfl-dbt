@@ -1,49 +1,236 @@
 version: 2
 
 models:
-
-  - name: plays
-    columns:
-    - name: play_key
-      tests:
-      - unique
-      - not_null
-
-    - name: play_id
-      tests:
-      - not_null
-
-    - name: game_id
-      tests:
-      - not_null
-      - relationships:
-          to: ref('games')
-          field: game_id
-
-    - name: home_team_code
-      tests:
-      - not_null
-      - relationships:
-          to: ref('teams')
-          field: team_code
-
-    - name: away_team_code
-      tests:
-      - not_null
-      - relationships:
-          to: ref('teams')
-          field: team_code
-
-    - name: passer_player_id
-      tests:
-      - not_null
-      - relationships:
-          to: ref('players')
-          field: player_id
-
-    - name: receiver_player_id
-      tests:
-      - not_null
-      - relationships:
-          to: ref('players')
-          field: player_id
+    - name: plays
+      columns:
+        - name: play_key
+          tests:
+            - unique
+            - not_null
+        - name: season_code
+          tests:
+            - not_null
+        - name: season_nbr
+          tests:
+            - not_null
+        - name: season_type_code
+          tests:
+            - not_null
+        - name: game_date
+          tests:
+            - not_null
+        - name: play_time
+        - name: play_id
+          tests:
+            - not_null
+        - name: game_id
+          tests:
+            - not_null
+            - relationships:
+                to: ref('games')
+                field: game_id
+                
+        - name: home_team_code
+        - name: away_team_code
+        - name: off_team_code
+        - name: off_team_type
+        - name: def_team_code
+        - name: side_of_field
+        - name: yardline_100
+        - name: quarter_seconds_remaining
+        - name: half_seconds_remaining
+        - name: game_seconds_remaining
+        - name: game_half
+        - name: is_quarter_end
+        - name: drive
+        - name: is_special_point
+        - name: quarter
+        - name: down
+        - name: is_within_goal_line
+        - name: yardline_desc
+        - name: yards_to_go
+        - name: net_yards
+        - name: yards_gained
+        - name: play_type
+        - name: play_description
+        - name: is_fourth_down_attempt
+        - name: pass_length
+        - name: pass_location
+        - name: air_yards
+        - name: yards_after_catch
+        - name: run_location
+        - name: run_gap
+        - name: field_goal_result
+        - name: is_field_goal_success
+        - name: kick_distance
+        - name: extra_point_result
+        - name: two_point_conv_result
+        - name: home_timeouts_remaining
+        - name: away_timeouts_remaining
+        - name: timeout_number
+        - name: timeout_team_code
+        - name: td_team_code
+        - name: off_team_timeouts_remaining
+        - name: def_team_timeouts_remaining
+        - name: total_home_score
+        - name: total_away_score
+        - name: off_team_score
+        - name: def_team_score
+        - name: score_differential
+        - name: off_team_score_post
+        - name: def_team_score_post
+        - name: score_differential_post
+        - name: replay_or_challenge_result
+        - name: penalty_type
+        - name: is_shotgun
+        - name: is_no_huddle
+        - name: is_qb_dropback
+        - name: is_qb_kneel
+        - name: is_qb_spike
+        - name: is_qb_scramble
+        - name: is_punt_blocked
+        - name: is_first_down_rush
+        - name: is_first_down_pass
+        - name: is_first_down_penalty
+        - name: is_third_down_converted
+        - name: is_third_down_failed
+        - name: is_fourth_down_converted
+        - name: is_fourth_down_failed
+        - name: is_incomplete_pass
+        - name: is_touchback
+        - name: is_interception
+        - name: is_punt_inside_twenty
+        - name: is_punt_in_endzone
+        - name: is_punt_out_of_bounds
+        - name: is_punt_downed
+        - name: is_punt_fair_catch
+        - name: is_kickoff_inside_twenty
+        - name: is_kickoff_in_endzone
+        - name: is_kickoff_out_of_bounds
+        - name: is_kickoff_downed
+        - name: is_kickoff_fair_catch
+        - name: is_fumble_forced
+        - name: is_fumble_not_forced
+        - name: is_fumble_out_of_bounds
+        - name: is_solo_tackle
+        - name: is_safety
+        - name: is_penalty
+        - name: is_replay_or_challenge
+        - name: is_tackled_for_loss
+        - name: is_fumble_lost
+        - name: is_own_kickoff_recovery
+        - name: is_own_kickoff_recovery_td
+        - name: is_qb_hit
+        - name: is_rush_attempt
+        - name: is_pass_attempt
+        - name: is_sack
+        - name: is_touchdown
+        - name: is_pass_touchdown
+        - name: is_rush_touchdown
+        - name: is_return_touchdown
+        - name: is_extra_point_attempt
+        - name: is_two_point_attempt
+        - name: is_field_goal_attempt
+        - name: is_kickoff_attempt
+        - name: is_punt_attempt
+        - name: is_fumble
+        - name: is_complete_pass
+        - name: is_assist_tackle
+        - name: is_lateral_reception
+        - name: is_lateral_rush
+        - name: is_lateral_return
+        - name: is_lateral_recovery
+        - name: is_defensive_two_point_attempt
+        - name: is_defensive_two_point_conv
+        - name: is_defensive_extra_point_attempt
+        - name: is_defensive_extra_point_conv
+        - name: passer_player_id
+        - name: passer_player_name
+        - name: receiver_player_id
+        - name: receiver_player_name
+        - name: rusher_player_id
+        - name: rusher_player_name
+        - name: lateral_receiver_player_id
+        - name: lateral_receiver_player_name
+        - name: lateral_rusher_player_id
+        - name: lateral_rusher_player_name
+        - name: lateral_sack_player_id
+        - name: lateral_sack_player_name
+        - name: interception_player_id
+        - name: interception_player_name
+        - name: lateral_interception_player_id
+        - name: lateral_interception_player_name
+        - name: punt_returner_player_id
+        - name: punt_returner_player_name
+        - name: lateral_punt_returner_player_id
+        - name: lateral_punt_returner_player_name
+        - name: kickoff_returner_player_name
+        - name: kickoff_returner_player_id
+        - name: lateral_kickoff_returner_player_id
+        - name: lateral_kickoff_returner_player_name
+        - name: punter_player_id
+        - name: punter_player_name
+        - name: kicker_player_name
+        - name: kicker_player_id
+        - name: own_kickoff_recovery_player_id
+        - name: own_kickoff_recovery_player_name
+        - name: blocked_player_id
+        - name: blocked_player_name
+        - name: tackle_for_loss_1_player_id
+        - name: tackle_for_loss_1_player_name
+        - name: tackle_for_loss_2_player_id
+        - name: tackle_for_loss_2_player_name
+        - name: qb_hit_1_player_id
+        - name: qb_hit_1_player_name
+        - name: qb_hit_2_player_id
+        - name: qb_hit_2_player_name
+        - name: forced_fumble_player_1_team
+        - name: forced_fumble_player_1_player_id
+        - name: forced_fumble_player_1_player_name
+        - name: forced_fumble_player_2_team
+        - name: forced_fumble_player_2_player_id
+        - name: forced_fumble_player_2_player_name
+        - name: solo_tackle_1_team
+        - name: solo_tackle_2_team
+        - name: solo_tackle_1_player_id
+        - name: solo_tackle_2_player_id
+        - name: solo_tackle_1_player_name
+        - name: solo_tackle_2_player_name
+        - name: assist_tackle_1_player_id
+        - name: assist_tackle_1_player_name
+        - name: assist_tackle_1_team
+        - name: assist_tackle_2_player_id
+        - name: assist_tackle_2_player_name
+        - name: assist_tackle_2_team
+        - name: assist_tackle_3_player_id
+        - name: assist_tackle_3_player_name
+        - name: assist_tackle_3_team
+        - name: assist_tackle_4_player_id
+        - name: assist_tackle_4_player_name
+        - name: assist_tackle_4_team
+        - name: pass_defense_1_player_id
+        - name: pass_defense_1_player_name
+        - name: pass_defense_2_player_id
+        - name: pass_defense_2_player_name
+        - name: fumbled_1_team
+        - name: fumbled_1_player_id
+        - name: fumbled_1_player_name
+        - name: fumbled_2_player_id
+        - name: fumbled_2_player_name
+        - name: fumbled_2_team
+        - name: fumble_recovery_1_team
+        - name: fumble_recovery_1_yards
+        - name: fumble_recovery_1_player_id
+        - name: fumble_recovery_1_player_name
+        - name: fumble_recovery_2_team
+        - name: fumble_recovery_2_player_id
+        - name: fumble_recovery_2_player_name
+        - name: penalty_team
+        - name: penalty_yards
+        - name: penalty_player_id
+        - name: penalty_player_name
+        - name: return_team
+        - name: return_yards
+        - name: play_dedupe_sequence_nbr
+        - name: dbt_batch_id
+        - name: dbt_batch_ts

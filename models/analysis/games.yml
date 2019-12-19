@@ -1,10 +1,48 @@
 version: 2
 
 models:
-
-  - name: games
-    columns:
-    - name: game_id
-      tests:
-      - unique
-      - not_null
+    - name: games
+      columns:
+        - name: season_code
+          tests:
+            - not_null
+        - name: game_id
+          tests:
+            - unique
+            - not_null
+        - name: game_date
+          tests:
+            - not_null
+            - relationships:
+                to: ref('dates')
+                field: game_date
+        - name: season_nbr
+          tests:
+            - not_null
+        - name: season_type_code
+          tests:
+            - not_null
+        - name: week_nbr
+          tests:
+            - not_null
+        - name: home_team_code
+          tests:
+            - not_null
+        - name: away_team_code
+          tests:
+            - not_null
+        - name: home_score
+          tests:
+            - not_null
+        - name: away_score
+          tests:
+            - not_null
+        - name: game_url
+          tests:
+            - not_null
+        - name: dbt_batch_id
+          tests:
+            - not_null
+        - name: dbt_batch_ts
+          tests:
+            - not_null
