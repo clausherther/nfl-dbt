@@ -1,6 +1,6 @@
 {{
     config(
-        materialized = 'ephemeral'
+        materialized = 'table'
     )
 }}
 select 

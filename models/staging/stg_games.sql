@@ -1,6 +1,8 @@
 {{
     config(
-        materialized = 'ephemeral'
+        materialized = 'incremental',
+        unique_key = 'game_id',
+        partition_by = 'game_date'
     )
 }}
 {# {%- set years = ['2019']-%} #}
@@ -39,9 +41,19 @@ with raw_games as (
     union all
     {% endif -%}
     {%- endfor %}
+),
+new_games as (
+
+    select *
+    from raw_games
+    {% if is_incremental() %}
+    where 
+        game_date >= cast({{ incremental_refresh_date() }} as date)
+    {% endif %}
+
 )
 select
     {{ get_season_code('r.season_type_code', 'r.season_nbr') }} as season_code,
     r.*
 from
-    raw_games r
+    new_games r

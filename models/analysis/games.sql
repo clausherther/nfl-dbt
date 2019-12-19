@@ -1,8 +1,8 @@
 {{
     config(
         materialized = 'incremental',
-        unique_key = 'game_date',
-        incremental_strategy = 'delete+insert'
+        unique_key = 'game_id',
+        partition_by = 'game_date'
     )
 }}
 with games as (

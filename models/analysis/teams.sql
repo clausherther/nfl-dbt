@@ -1,6 +1,8 @@
 {{
     config(
-        materialized = 'table'
+        materialized = 'table',
+        unique_key = 'team_id'
+
     )
 }}
 with teams as (

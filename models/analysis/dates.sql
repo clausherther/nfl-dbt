@@ -1,6 +1,7 @@
 {{
     config(
-        materialized = 'table'
+        materialized = 'table',
+        unique_key = 'game_date'
     )
 }}
 with game_dates as (
@@ -11,3 +12,5 @@ select
     {{ dbt_housekeeping() }}
 from
     game_dates d
+order by 
+    d.game_date    

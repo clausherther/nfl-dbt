@@ -1,0 +1,10 @@
+version: 2
+
+models:
+
+  - name: players
+    columns:
+    - name: player_id
+      tests:
+      - unique
+      - not_null

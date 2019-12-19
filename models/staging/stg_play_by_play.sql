@@ -1,6 +1,8 @@
 {{
     config(
-        materialized = 'ephemeral'
+        materialized = 'incremental',
+        unique_key = 'play_key',
+        partition_by = 'game_date'
     )
 }}
 {# {%- set years = ['2019']-%} #}
@@ -39,9 +41,37 @@ with raw_pbp as (
     union all
     {% endif -%}
     {%- endfor %}
+),
+new_plays as (
+
+    select * 
+    from raw_pbp
+    {% if is_incremental() %}
+    where 
+        game_date >= cast({{ incremental_refresh_date() }} as date)
+    {% endif %}
+
+),
+numbered_plays as (
+
+    select
+        p.*,
+        row_number() over(partition by game_id, play_id order by (total_home_score+total_away_score) desc) as play_dedupe_sequence_nbr 
+    from 
+        new_plays p
+
+),
+deduped_plays as (
+    select 
+        *
+    from
+        numbered_plays
+    where
+        play_dedupe_sequence_nbr = 1
 )
-select
+select 
+    {{ dbt_utils.surrogate_key('r.game_id', 'r.play_id' )}} as play_key,
     {{ get_season_code('r.season_type_code', 'r.season_nbr') }} as season_code,
     r.*
-from
-    raw_pbp r
+from 
+    deduped_plays r

@@ -1,0 +1,9 @@
+version: 2
+
+models:
+  - name: dates
+    columns:
+    - name: game_date
+      tests:
+      - unique
+      - not_null

@@ -1,6 +1,6 @@
 {{
     config(
-        materialized = 'ephemeral'
+        materialized = 'table'
     )
 }}
 with game_dates as (
@@ -29,8 +29,8 @@ select
         ) as season_week_code,
     cast(
             case
-                when {{ date_part('dow', 'd.game_date') }} = 0 then 7
-                else {{ date_part('dow', 'd.game_date') }}
+                when {{ date_part(datepart_weekday(), 'd.game_date') }} = 0 then 7
+                else {{ date_part(datepart_weekday(), 'd.game_date') }}
             end
         as {{ dbt_utils.type_int() }}
     ) as day_of_week,
@@ -38,7 +38,7 @@ select
     {{ day_name('d.game_date', short=false) }} as day_of_week_name,
     {{ day_name('d.game_date', short=true) }} as day_of_week_name_short,
 
-    cast({{ date_part('month', 'd.game_date') }} as {{ dbt_utils.type_int() }}) as month_of_year,
+    cast({{ date_part(datepart_month(), 'd.game_date') }} as {{ dbt_utils.type_int() }}) as month_of_year,
     {{ month_name('d.game_date', short=false) }}  as month_name,
     {{ month_name('d.game_date', short=true) }}  as month_name_short
 from

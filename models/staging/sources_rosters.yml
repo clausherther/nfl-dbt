@@ -5,9 +5,9 @@ sources:
     schema: raw
     
     quoting:
-      database: false
-      schema: false
-      identifier: false
+      database: true
+      schema: true
+      identifier: true
       
     tables:
       - name: pre_roster_2009

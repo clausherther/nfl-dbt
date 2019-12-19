@@ -2,7 +2,12 @@
 
 {%- set typed_cols %}
     {{ to_int('game_id') }} as game_id,
-    cast(left(cast(game_id as {{ dbt_utils.type_string() }}), 8) as date) as game_date,
+    {{ int_to_date(
+        left(
+            dbt_utils.safe_cast('game_id', dbt_utils.type_string())
+            , 8
+            ) 
+    ) }} as game_date,
     {{ to_int('season') }} as season_nbr,
     upper(type) as season_type_code,
     {{ to_int('week') }} as week_nbr,
