@@ -190,6 +190,7 @@
         run_location,
         run_gap,
         field_goal_result,
+        case when field_goal_result = 'made' then true else false end as is_field_goal_success,
         {{ to_int('kick_distance') }} as kick_distance,
         extra_point_result,
         two_point_conv_result,

@@ -41,6 +41,7 @@ with raw_games as (
     {%- endfor %}
 )
 select
+    {{ get_season_code('r.season_type_code', 'r.season_nbr') }} as season_code,
     r.*
 from
     raw_games r

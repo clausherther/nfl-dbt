@@ -54,6 +54,20 @@ models:
           to: ref('teams')
           field: team_code
 
+    - name: passer_player_id
+      tests:
+      - not_null
+      - relationships:
+          to: ref('players')
+          field: player_id
+
+    - name: receiver_player_id
+      tests:
+      - not_null
+      - relationships:
+          to: ref('players')
+          field: player_id
+
   - name: teams_players
     columns:
     - name: player_key

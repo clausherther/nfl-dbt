@@ -108,6 +108,7 @@ bad_id_fix as (
 select
     r.season_nbr,
     r.season_type_code,
+    {{ get_season_code('r.season_type_code', 'r.season_nbr') }} as season_code,
     coalesce(f.player_id, r.player_id) as player_id,
     r.player_name_full,
     r.player_name_abbr,

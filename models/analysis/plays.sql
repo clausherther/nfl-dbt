@@ -35,3 +35,7 @@ select
     {{ dbt_housekeeping() }} 
 from 
     deduped_plays r
+order by
+    r.season_nbr,
+    r.game_id,
+    r.play_id

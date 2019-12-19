@@ -19,9 +19,7 @@ select
     d.game_date,
     d.season_nbr,
     d.season_type_code,
-    concat(d.season_type_code, 
-        cast(d.season_nbr as {{ dbt_utils.type_string() }} )
-        ) as season_code,
+    {{ get_season_code('d.season_type_code', 'd.season_nbr') }} as season_code,
     min(d.game_date) over(partition by d.season_nbr) as season_start_date,
     min(d.game_date) over(partition by d.season_nbr, d.season_type_code) as season_type_start_date,
     d.week_nbr,
