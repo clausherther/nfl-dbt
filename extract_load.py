@@ -4,7 +4,7 @@ from pathlib import Path
 import pandas as pd
 import yaml
 from sqlalchemy import create_engine
-from sqlalchemy.types import Integer, String
+from sqlalchemy.types import Integer, String, TIMESTAMP
 
 
 def read_yaml(yaml_path, storage_model='local'):
@@ -40,6 +40,8 @@ def fix_dtypes(df):
             dtypes[col] = Integer()
         elif df.dtypes[col] == "float64":
             df[col] = df[col].fillna(0)
+        elif "_date" in col:
+            dtypes[col] = TIMESTAMP
         elif df.dtypes[col] == "O":
             df[col] = df[col].fillna("")
             dtypes[col] = String()
@@ -47,19 +49,25 @@ def fix_dtypes(df):
     return df, dtypes
 
 
-def create_empty_table(engine, df, dtypes, table_name, schema_name):
+def create_empty_table(engine, df, dtypes, table_name, schema_name, partition_col=None, replace=False):
 
+    create_sql = pd.io.sql.get_schema(df, f"{schema_name}.{table_name}", con=engine, dtype=dtypes)
+    if not replace:
+        drop_sql = None
+        create_sql = create_sql.replace("CREATE TABLE", "CREATE TABLE IF NOT EXISTS")
+    else:
+        drop_sql = f"DROP TABLE {schema_name}.{table_name};"
+        # create_sql = create_sql.replace("CREATE TABLE", "CREATE OR REPLACE TABLE")
+
+    if partition_col:
+        create_sql += f"PARTITION BY {partition_col}"
+    # print(create_sql)
     try:
         with engine.connect() as con:
-            df.head(0).to_sql(
-                name=table_name,
-                schema=schema_name,
-                con=con,
-                if_exists="fail",
-                index=False,
-                dtype=dtypes
-            )
-    except ValueError as ex:
+            if drop_sql:
+                con.execute(drop_sql)
+            con.execute(create_sql)
+    except Exception as ex:
         print(ex)
 
 
@@ -73,6 +81,15 @@ def prep_data_files(data_files, base_dir, data_dir, target_dir):
         parent_path = f.parents[0].relative_to(Path(base_dir, data_dir))
 
         df = get_data(file_path)
+
+        date_col = "game_date"
+        id_col = "game_id"
+
+        if date_col in df.columns:
+            df[date_col] = df[date_col].apply(lambda x: pd.to_datetime(x) + pd.Timedelta(seconds=1))
+        elif id_col in df.columns:
+            df[date_col] = df[id_col].apply(lambda x: pd.to_datetime(str(x)[:8]) + pd.Timedelta(seconds=1))
+
         df, dtypes = fix_dtypes(df)
 
         dfs[table_name] = {}
@@ -84,14 +101,25 @@ def prep_data_files(data_files, base_dir, data_dir, target_dir):
     return dfs
 
 
-def create_tables(engine, data_frames, schema_name, dry_run=False):
+def create_tables(engine, data_frames, schema_name, dry_run=False, replace=False):
 
     for table_name, value in data_frames.items():
         df = value["data"]
         dtypes = value["dtypes"]
+
+        date_col = "game_date"
+        partition_col = None
+
+        if date_col in df.columns:
+            partition_col = f"date({date_col})"
+        # elif id_col in df.columns:
+        #     partition_col = f"{id_col}"
+        else:
+            partition_col = None
+
         if not dry_run:
             print(f"Creating table {schema_name}.{table_name}...")
-            create_empty_table(engine, df, dtypes, table_name, schema_name)
+            create_empty_table(engine, df, dtypes, table_name, schema_name, partition_col, replace=replace)
 
 
 def clone_nfl_data_repo(base_dir, data_dir):
@@ -102,14 +130,14 @@ def clone_nfl_data_repo(base_dir, data_dir):
         os.system(f"cd {base_dir};cd {data_dir};git pull")
 
 
-def data_prep(engine, source_data_sub_folders, base_dir, data_dir, load_dir, file_filter, load_schema):
+def data_prep(engine, source_data_sub_folders, base_dir, data_dir, load_dir, file_filter, load_schema, replace):
 
     for sub_folder in source_data_sub_folders:
         p = Path(base_dir, data_dir, sub_folder)
         data_files = sorted(list(p.rglob(file_filter)))
 
         dfs = prep_data_files(data_files, base_dir, data_dir, load_dir)
-        create_tables(engine, dfs, load_schema, dry_run=False)
+        create_tables(engine, dfs, load_schema, replace=replace)
 
 
 def data_load_pg(load_path, file_filter, db_host, db_user, db_password, load_database, load_schema):
@@ -157,8 +185,8 @@ def main():
     base_dir = "data_prep"
     load_dir = "data_files_load"
     data_dir = "nflscrapR-data"
-    # file_filter = "*_2019.csv"
-    file_filter = "*.csv"
+    file_filter = "*_games_2019.csv"
+    # file_filter = "*.csv"
 
     """
     DB Config for Postgres, adjust accordingly
@@ -184,11 +212,11 @@ def main():
 
     if db_type == "postgres":
         url = f"postgresql://{db_user}:{db_password}@{db_host}:5432/{load_database}"
-        engine = create_engine(url)
+        engine = create_engine(url, echo=True)
     elif db_type == "bigquery":
         url = f"bigquery://{load_database}"
         key_file_path = dbt_profile["keyfile"]
-        engine = create_engine(url, credentials_path=key_file_path)
+        engine = create_engine(url, credentials_path=key_file_path, echo=True)
 
     Path(base_dir).mkdir(exist_ok=True)
     clone_nfl_data_repo(base_dir, data_dir)
@@ -196,7 +224,8 @@ def main():
     source_data_sub_folders = ["games_data", "play_by_play_data", "roster_data"]
 
     if do_prep:
-        data_prep(engine, source_data_sub_folders, base_dir, data_dir, load_dir, file_filter, load_schema)
+        replace = True
+        data_prep(engine, source_data_sub_folders, base_dir, data_dir, load_dir, file_filter, load_schema, replace)
 
     if do_load:
         load_path = Path(base_dir, load_dir)
