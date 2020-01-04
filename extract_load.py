@@ -56,8 +56,10 @@ def create_empty_table(engine, df, dtypes, table_name, schema_name, partition_co
         drop_sql = None
         create_sql = create_sql.replace("CREATE TABLE", "CREATE TABLE IF NOT EXISTS")
     else:
-        drop_sql = f"DROP TABLE {schema_name}.{table_name};"
-        # create_sql = create_sql.replace("CREATE TABLE", "CREATE OR REPLACE TABLE")
+        drop_sql = f"DROP TABLE IF EXISTS {schema_name}.{table_name};"
+
+    create_sql = create_sql.replace('"', '')
+    create_sql = create_sql.replace('desc ', '"desc" ')
 
     if partition_col:
         create_sql += f"PARTITION BY {partition_col}"
@@ -66,9 +68,10 @@ def create_empty_table(engine, df, dtypes, table_name, schema_name, partition_co
         with engine.connect() as con:
             if drop_sql:
                 con.execute(drop_sql)
+
             con.execute(create_sql)
     except Exception as ex:
-        print(ex)
+        print(f"EXCEPTION: {ex}")
 
 
 def prep_data_files(data_files, base_dir, data_dir, target_dir):
@@ -101,7 +104,7 @@ def prep_data_files(data_files, base_dir, data_dir, target_dir):
     return dfs
 
 
-def create_tables(engine, data_frames, schema_name, dry_run=False, replace=False):
+def create_tables(engine, data_frames, schema_name, dry_run=False, replace=False, supports_partitions=True):
 
     for table_name, value in data_frames.items():
         df = value["data"]
@@ -110,10 +113,8 @@ def create_tables(engine, data_frames, schema_name, dry_run=False, replace=False
         date_col = "game_date"
         partition_col = None
 
-        if date_col in df.columns:
+        if supports_partitions and date_col in df.columns:
             partition_col = f"date({date_col})"
-        # elif id_col in df.columns:
-        #     partition_col = f"{id_col}"
         else:
             partition_col = None
 
@@ -130,14 +131,14 @@ def clone_nfl_data_repo(base_dir, data_dir):
         os.system(f"cd {base_dir};cd {data_dir};git pull")
 
 
-def data_prep(engine, source_data_sub_folders, base_dir, data_dir, load_dir, file_filter, load_schema, replace):
+def data_prep(engine, source_data_sub_folders, base_dir, data_dir, load_dir, file_filter, load_schema, replace, supports_partitions):
 
     for sub_folder in source_data_sub_folders:
         p = Path(base_dir, data_dir, sub_folder)
         data_files = sorted(list(p.rglob(file_filter)))
 
         dfs = prep_data_files(data_files, base_dir, data_dir, load_dir)
-        create_tables(engine, dfs, load_schema, replace=replace)
+        create_tables(engine, dfs, load_schema, replace=replace, supports_partitions=supports_partitions)
 
 
 def data_load_pg(load_path, file_filter, db_host, db_user, db_password, load_database, load_schema):
@@ -149,7 +150,7 @@ def data_load_pg(load_path, file_filter, db_host, db_user, db_password, load_dat
         print(f"Loading {raw_file_path}...")
 
         truncate_cmd = f"truncate table {table_name};"
-        copy_cmd = f"\copy {table_name} from '{raw_file_path}' with delimiter ',' csv header;"
+        copy_cmd = f"\\copy {table_name} from '{raw_file_path}' with delimiter ',' csv header;"
         psql_cmd = f'PGPASSWORD={db_password} psql --host={db_host} --port=5432 --username={db_user} -w --dbname={load_database}'
 
         cmd = psql_cmd + f' --command="{truncate_cmd}"'
@@ -185,20 +186,14 @@ def main():
     base_dir = "data_prep"
     load_dir = "data_files_load"
     data_dir = "nflscrapR-data"
-    file_filter = "*_games_2019.csv"
-    # file_filter = "*.csv"
-
-    """
-    DB Config for Postgres, adjust accordingly
-    for other database supported by SQLAlchemy.
-    (Redshift, Snowflake, BigQuery)
-    """
+    # file_filter = "*_2019.csv"
+    file_filter = "*.csv"
 
     dbt_profiles_path = Path(Path.home(), ".dbt", "profiles.yml")
     dbt_profiles = read_yaml(dbt_profiles_path)
 
     dbt_profile_name = "nfl"
-    dbt_target_name = "bq"
+    dbt_target_name = "pg_local"
 
     dbt_profile = dbt_profiles[dbt_profile_name]["outputs"][dbt_target_name]
     print(dbt_profile)
@@ -213,10 +208,12 @@ def main():
     if db_type == "postgres":
         url = f"postgresql://{db_user}:{db_password}@{db_host}:5432/{load_database}"
         engine = create_engine(url, echo=True)
+        supports_partitions = False
     elif db_type == "bigquery":
         url = f"bigquery://{load_database}"
         key_file_path = dbt_profile["keyfile"]
         engine = create_engine(url, credentials_path=key_file_path, echo=True)
+        supports_partitions = True
 
     Path(base_dir).mkdir(exist_ok=True)
     clone_nfl_data_repo(base_dir, data_dir)
@@ -225,7 +222,7 @@ def main():
 
     if do_prep:
         replace = True
-        data_prep(engine, source_data_sub_folders, base_dir, data_dir, load_dir, file_filter, load_schema, replace)
+        data_prep(engine, source_data_sub_folders, base_dir, data_dir, load_dir, file_filter, load_schema, replace, supports_partitions)
 
     if do_load:
         load_path = Path(base_dir, load_dir)
