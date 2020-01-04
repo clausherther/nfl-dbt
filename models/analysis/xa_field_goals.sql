@@ -7,6 +7,7 @@ teams as (
 field_goal_kicks as (
 
     select
+        p.play_key,
         p.game_date,
         p.game_id,
         p.play_id,
