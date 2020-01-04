@@ -15,24 +15,35 @@ The `nflscrapR-data` repo is updated with some regularity, but since this is a v
 - `teams`: team code and consolidated code, in case of team moves of renames
 - `teams_players`: team rosters by season, showing player and (primary) position for the season
 
+### XA (Transformed Aggregates)
+These models are aggregates of one or more of the models above:
+- `xa_field_goals`: field goal plays only with additional information about kick angle
+
+
 ### Notes 
 - a few missing `player_id` values in the `players` and `teams_player` models have been (at least attempted to be) fixed
 - any duplicate plays (likely a result of the scraping process) are removed from `plays`
 
 ## Data Load
-The repo assumes that the raw scraped data has been loaded to a **PostgreSQL** database, with one raw file corresponding to a single table in a database called `raw`.
+The repo assumes that the raw scraped data has been loaded to either a **PostgreSQL** or **BigQuery** database, with one raw file corresponding to a single table in a database called `raw`.
 
 The included Python script [`extract_load`](extract_load) is intended to do the following:
 - Clone and/or locally refresh the `nflscrapR-data` repo
-- Create empty tables in a local Postgres instance
+- Create empty tables in a BigQuery or Postgres instance
 - Load raw data files to Postgres using a `dbt run-operation` to load each file using Postgres' `copy` command
 
-The `extract_load.py` file can be easily configured to work with a remote Postgres server, e.g. hosted on AWS RDS. With a little bit of extra work this can also be modified to work with Snowflake, BigQuery or Redshift.
+The script uses the connection info defined in your local `~/.dbt/profiles.yml` file and needs to be configured with the appropriate profile name and target to use:
+
+E.g.:
+```yaml
+dbt_profile_name = "nfl"
+dbt_target_name = "pg_local"
+```
+The load portion currently only works for Postgres and BigQuery, but could probably be extended to work with Snowflake and Redshift (:OOF:) as well.
 
 ## Future Work
 The following items would make great natural extensions and improvements to the repo:
-- Update `extract_load.py` to use connection info from `~/.dbt/profiles.yml`
-- Add support for Snowflake, BigQuery and Redshift
+- Add support for Snowflake and Redshift
 - Add report models to more easily enable analytical models:
     - Player stats
     - Game stats
