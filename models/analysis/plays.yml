@@ -232,5 +232,3 @@ models:
         - name: return_team
         - name: return_yards
         - name: play_dedupe_sequence_nbr
-        - name: dbt_batch_id
-        - name: dbt_batch_ts

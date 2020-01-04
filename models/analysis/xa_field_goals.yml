@@ -1,0 +1,18 @@
+version: 2
+
+models:
+  - name: xa_field_goals
+    columns:
+      - name: play_key
+        tests:
+          - unique
+          - not_null
+      - name: kick_distance_yards
+        tests:
+          - not_null
+      - name: kick_angle_horizontal
+        tests:
+          - not_null
+      - name: kick_angle_vertical
+        tests:
+          - not_null

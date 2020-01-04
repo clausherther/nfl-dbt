@@ -42,9 +42,3 @@ models:
         - name: position_code
           tests:
             - not_null
-        - name: dbt_batch_id
-          tests:
-            - not_null
-        - name: dbt_batch_ts
-          tests:
-            - not_null
