@@ -49,7 +49,11 @@ field_goal_kicks as (
 )
 select
     p.*,
-    {{ get_kick_angle_horizontal('p.kick_distance_yards') }} as kick_angle_horizontal,
-    {{ get_kick_angle_vertical('p.kick_distance_yards') }} as kick_angle_vertical
+    {{ convert_radians_to_degrees(
+        get_kick_angle_horizontal('p.kick_distance_yards')
+     ) }} as kick_angle_horizontal,
+    {{ convert_radians_to_degrees(
+        get_kick_angle_vertical('p.kick_distance_yards')
+     ) }} as kick_angle_vertical
 from
     field_goal_kicks p
