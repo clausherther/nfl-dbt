@@ -1,5 +1,14 @@
+{{
+    config(
+        materialized = 'table',
+        partition_by = 'RANGE_BUCKET(season_nbr, GENERATE_ARRAY(2011, 2020, 1))'
+    )
+}}
 with plays as (
     select * from {{ ref('plays') }} 
+),
+dates as (
+    select * from {{ ref('dates') }} 
 ),
 teams as (
     select * from {{ ref('teams') }} 
@@ -9,6 +18,8 @@ field_goal_kicks as (
     select
         p.play_key,
         p.game_date,
+        d.week_nbr,
+        d.season_week_code,
         p.game_id,
         p.play_id,
         p.season_nbr,
@@ -33,6 +44,8 @@ field_goal_kicks as (
         case when p.is_field_goal_success = true then 1 else 0 end as successful_field_goals
     from
         plays p
+        inner join
+        dates d on p.game_date = d.game_date
         inner join 
         teams ot on p.off_team_code = ot.team_code
         inner join 
@@ -49,11 +62,14 @@ field_goal_kicks as (
 )
 select
     p.*,
+    {{ get_kick_angle_horizontal('p.kick_distance_yards') }} as kick_angle_horizontal,
+    {{ get_kick_angle_vertical('p.kick_distance_yards') }} as kick_angle_vertical,
     {{ convert_radians_to_degrees(
         get_kick_angle_horizontal('p.kick_distance_yards')
-     ) }} as kick_angle_horizontal,
+     ) }} as kick_angle_horizontal_degrees,
     {{ convert_radians_to_degrees(
         get_kick_angle_vertical('p.kick_distance_yards')
-     ) }} as kick_angle_vertical
+     ) }} as kick_angle_vertical_degrees
+
 from
     field_goal_kicks p
