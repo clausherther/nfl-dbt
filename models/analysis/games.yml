@@ -13,9 +13,6 @@ models:
         - name: game_date
           tests:
             - not_null
-            - relationships:
-                to: ref('dates')
-                field: game_date
         - name: season_nbr
           tests:
             - not_null
@@ -28,9 +25,15 @@ models:
         - name: home_team_code
           tests:
             - not_null
+            - relationships:
+                to: ref('teams')
+                field: team_code
         - name: away_team_code
           tests:
             - not_null
+            - relationships:
+                to: ref('teams')
+                field: team_code
         - name: home_score
           tests:
             - not_null
