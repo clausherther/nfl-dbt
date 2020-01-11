@@ -1,10 +1,17 @@
 import os
 from pathlib import Path
 
+import multiprocessing
+from joblib import Parallel, parallel_backend, delayed
+
 import pandas as pd
 import yaml
 from sqlalchemy import create_engine
 from sqlalchemy.types import Integer, String, TIMESTAMP
+
+
+num_cores = multiprocessing.cpu_count()
+N_JOBS = num_cores
 
 
 def read_yaml(yaml_path, storage_model='local'):
@@ -74,41 +81,61 @@ def create_empty_table(engine, df, dtypes, table_name, schema_name, partition_co
         print(f"EXCEPTION: {ex}")
 
 
-def prep_data_files(data_files, base_dir, data_dir, target_dir):
+def prep_data_file(data_file, base_dir, data_dir, target_dir):
 
     dfs = {}
-    for f in data_files:
-        file_path = f.resolve()
-        print(f"Processing {file_path}...")
-        table_name = f.stem
-        parent_path = f.parents[0].relative_to(Path(base_dir, data_dir))
 
-        df = get_data(file_path)
+    file_path = data_file.resolve()
+    print(f"Processing {file_path}...")
+    table_name = data_file.stem
+    parent_path = data_file.parents[0].relative_to(Path(base_dir, data_dir))
 
-        date_col = "game_date"
-        id_col = "game_id"
+    df = get_data(file_path)
 
-        if date_col in df.columns:
-            df[date_col] = df[date_col].apply(lambda x: pd.to_datetime(x) + pd.Timedelta(seconds=1))
-        elif id_col in df.columns:
-            df[date_col] = df[id_col].apply(lambda x: pd.to_datetime(str(x)[:8]) + pd.Timedelta(seconds=1))
+    date_col = "game_date"
+    id_col = "game_id"
 
-        df, dtypes = fix_dtypes(df)
+    if date_col in df.columns:
+        df[date_col] = df[date_col].apply(lambda x: pd.to_datetime(x) + pd.Timedelta(seconds=1))
+    elif id_col in df.columns:
+        df[date_col] = df[id_col].apply(lambda x: pd.to_datetime(str(x)[:8]) + pd.Timedelta(seconds=1))
 
-        dfs[table_name] = {}
-        dfs[table_name]["data"] = df
-        dfs[table_name]["dtypes"] = dtypes
-        target_file_path = Path(base_dir, target_dir, parent_path, f"{table_name}.csv").resolve()
-        save_df(df, target_file_path)
+    df, dtypes = fix_dtypes(df)
+
+    dfs["table_name"] = table_name
+    dfs["data"] = df
+    dfs["dtypes"] = dtypes
+    target_file_path = Path(base_dir, target_dir, parent_path, f"{table_name}.csv").resolve()
+    save_df(df, target_file_path)
+
+    return dfs
+
+
+def prep_data_files(data_files, base_dir, data_dir, target_dir):
+
+    backend = parallel_backend("multiprocessing")
+    N_JOBS = 4
+
+    print(f"Spinning up {N_JOBS} jobs on {num_cores} cores...")
+
+    with backend:
+
+        dfs = Parallel(n_jobs=N_JOBS, verbose=10)(
+            delayed(prep_data_file)(
+                data_file, base_dir, data_dir, target_dir
+            )
+            for data_file in data_files
+        )
 
     return dfs
 
 
 def create_tables(engine, data_frames, schema_name, dry_run=False, replace=False, supports_partitions=True):
 
-    for table_name, value in data_frames.items():
-        df = value["data"]
-        dtypes = value["dtypes"]
+    for f in data_frames:
+        table_name = f["table_name"]
+        df = f["data"]
+        dtypes = f["dtypes"]
 
         date_col = "game_date"
         partition_col = None
@@ -186,14 +213,15 @@ def main():
     base_dir = "data_prep"
     load_dir = "data_files_load"
     data_dir = "nflscrapR-data"
-    # file_filter = "*_2019.csv"
-    file_filter = "*.csv"
+    file_filter = "*_2019.csv"
+    # file_filter = "*.csv"
 
     dbt_profiles_path = Path(Path.home(), ".dbt", "profiles.yml")
     dbt_profiles = read_yaml(dbt_profiles_path)
 
     dbt_profile_name = "nfl"
-    dbt_target_name = "pg_local"
+    # dbt_target_name = "pg_local"
+    dbt_target_name = "bq"
 
     dbt_profile = dbt_profiles[dbt_profile_name]["outputs"][dbt_target_name]
     print(dbt_profile)
