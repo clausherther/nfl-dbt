@@ -1,7 +1,7 @@
 {{
     config(
         materialized = 'table',
-        partition_by = 'RANGE_BUCKET(season_nbr, GENERATE_ARRAY(2011, 2020, 1))'
+        partition_by = 'RANGE_BUCKET(season_nbr, GENERATE_ARRAY(2011, 2030, 1))'
     )
 }}
 with plays as (
