@@ -163,6 +163,7 @@
         away_team as away_team_code,
         posteam as off_team_code,
         posteam_type as off_team_type,
+        case when home = 'home' then true else false end as is_home_team,
         defteam as def_team_code,
         side_of_field,
         {{ to_int('yardline_100') }} as yardline_100,
