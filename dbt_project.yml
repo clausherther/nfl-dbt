@@ -22,4 +22,4 @@ models:
           schema: analysis
   vars:
       dbt_date:time_zone: 'UTC'
-      incremental_days: 31
+      incremental_days: 90

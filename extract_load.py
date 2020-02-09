@@ -204,7 +204,7 @@ def data_load_bigquery(load_path, file_filter, db_host, db_user, db_password, lo
 
 def main():
 
-    do_prep = True
+    do_prep = False
     do_load = True
 
     """
@@ -240,11 +240,11 @@ def main():
     elif db_type == "bigquery":
         url = f"bigquery://{load_database}"
         key_file_path = dbt_profile["keyfile"]
-        engine = create_engine(url, credentials_path=key_file_path, echo=True)
+        engine = create_engine(url, credentials_path=key_file_path, echo=False)
         supports_partitions = True
 
     Path(base_dir).mkdir(exist_ok=True)
-    clone_nfl_data_repo(base_dir, data_dir)
+    # clone_nfl_data_repo(base_dir, data_dir)
 
     source_data_sub_folders = ["games_data", "play_by_play_data", "roster_data"]
 
