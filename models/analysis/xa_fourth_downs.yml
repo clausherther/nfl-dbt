@@ -1,0 +1,18 @@
+version: 2
+
+models:
+  - name: xa_fourth_downs
+    columns:
+      - name: play_key
+        tests:
+          - unique
+          - not_null
+      - name: yards_to_go
+        tests:
+          - not_null
+      - name: fourth_down_attempts
+        tests:
+          - not_null
+      - name: fourth_down_conversions
+        tests:
+          - not_null
