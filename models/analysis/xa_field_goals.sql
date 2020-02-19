@@ -1,11 +1,16 @@
 {{
     config(
-        materialized = 'table',
-        partition_by = 'RANGE_BUCKET(season_nbr, GENERATE_ARRAY(2011, 2030, 1))'
+        materialized = 'incremental',
+        unique_key = 'play_key',
+        partition_by = 'game_date'
     )
 }}
 with plays as (
     select * from {{ ref('plays') }} 
+    {% if is_incremental() %}
+    where 
+        game_date >= cast({{ incremental_refresh_date() }} as date)
+    {% endif %}
 ),
 dates as (
     select * from {{ ref('dates') }} 
