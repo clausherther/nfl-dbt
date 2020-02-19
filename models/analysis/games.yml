@@ -6,7 +6,6 @@ models:
         - name: season_code
           tests:
             - unique
-            - not_null
         - name: game_id
           tests:
             - unique
