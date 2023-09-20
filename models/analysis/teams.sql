@@ -1,16 +1,24 @@
 {{
     config(
-        materialized = 'table',
-        unique_key = 'team_id'
+        materialized = "table",
+        unique_key = "team_code"
 
     )
 }}
 with teams as (
-    select * from {{ ref('stg_teams') }}
+
+    select
+        home_team_code as team_code
+    from
+        {{ ref("stg_play_by_play") }}
+    where
+        nullif(trim(home_team_code), '') is not null
+    group by
+        1
+
 )
 select
     team_code,
-    consolidated_team_code,
     {{ dbt_housekeeping() }}
 from
     teams

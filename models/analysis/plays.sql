@@ -1,19 +1,19 @@
 {{
     config(
-        materialized = 'incremental',
-        unique_key = 'play_key',
-        partition_by = 'game_date'
+        materialized = "incremental",
+        unique_key = "play_key",
+        partition_by = {"field": "game_date", "data_type": "date", "granularity": "day"}
     )
 }}
 with plays as (
-    select * from {{ ref('stg_play_by_play') }}
+    select * from {{ ref("stg_play_by_play") }}
     {% if is_incremental() %}
-    where 
+    where
         game_date >= cast({{ incremental_refresh_date() }} as date)
     {% endif %}
 )
-select 
+select
     r.*,
-    {{ dbt_housekeeping() }} 
-from 
+    {{ dbt_housekeeping() }}
+from
     plays r

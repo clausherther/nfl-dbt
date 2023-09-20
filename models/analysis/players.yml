@@ -8,9 +8,6 @@ models:
       tests:
       - unique
       - not_null
-    - name: player_name_full
-      tests:
-        - not_null
-    - name: player_name_abbr
+    - name: player_name
       tests:
         - not_null

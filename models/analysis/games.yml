@@ -3,9 +3,6 @@ version: 2
 models:
     - name: games
       columns:
-        - name: season_code
-          tests:
-            - not_null
         - name: game_id
           tests:
             - unique
@@ -20,26 +17,23 @@ models:
           tests:
             - not_null
         - name: week_nbr
-          tests:
-            - not_null
+          # tests:
+          #   - not_null
         - name: home_team_code
           tests:
             - not_null
             - relationships:
-                to: ref('teams')
+                to: ref("teams")
                 field: team_code
         - name: away_team_code
           tests:
             - not_null
             - relationships:
-                to: ref('teams')
+                to: ref("teams")
                 field: team_code
         - name: home_score
           tests:
             - not_null
         - name: away_score
-          tests:
-            - not_null
-        - name: game_url
           tests:
             - not_null

@@ -1,22 +1,19 @@
 {{
     config(
-        materialized = 'incremental',
-        unique_key = 'play_key',
-        partition_by = 'game_date'
+        materialized = "incremental",
+        unique_key = "play_key",
+        partition_by = {"field": "game_date", "data_type": "date", "granularity": "day"}
     )
 }}
 with plays as (
-    select * from {{ ref('plays') }} 
+    select * from {{ ref("plays") }}
     {% if is_incremental() %}
-    where 
+    where
         game_date >= cast({{ incremental_refresh_date() }} as date)
     {% endif %}
 ),
 dates as (
-    select * from {{ ref('dates') }} 
-),
-teams as (
-    select * from {{ ref('teams') }} 
+    select * from {{ ref("dates") }}
 ),
 field_goal_kicks as (
 
@@ -33,15 +30,15 @@ field_goal_kicks as (
         p.quarter,
         p.down,
         p.play_type,
-        ht.consolidated_team_code as home_team_code,
-        wt.consolidated_team_code as away_team_code,
-        ot.consolidated_team_code as off_team_code,
-        dt.consolidated_team_code as def_team_code,
+        p.home_team_code,
+        p.away_team_code,
+        p.off_team_code,
+        p.def_team_code,
         p.kicker_player_id,
         p.kicker_player_name,
         p.yards_to_go,
         p.yardline_100,
-        {{ get_kick_distance('p.kick_distance', 'p.yardline_100') }} as kick_distance_yards,
+        {{ get_kick_distance("p.kick_distance", "p.yardline_100") }} as kick_distance_yards,
         p.is_within_goal_line,
         p.field_goal_result,
         p.is_field_goal_success,
@@ -51,29 +48,21 @@ field_goal_kicks as (
         plays p
         inner join
         dates d on p.game_date = d.game_date
-        inner join 
-        teams ot on p.off_team_code = ot.team_code
-        inner join 
-        teams dt on p.def_team_code = dt.team_code
-        inner join 
-        teams ht on p.home_team_code = ht.team_code
-        inner join 
-        teams wt on p.away_team_code = wt.team_code
     where
-        p.is_field_goal_attempt=true 
+        p.is_field_goal_attempt = true
         and
-        p.is_extra_point_attempt=false
+        p.is_extra_point_attempt = false
 
 )
 select
     p.*,
-    {{ get_kick_angle_horizontal('p.kick_distance_yards') }} as kick_angle_horizontal,
-    {{ get_kick_angle_vertical('p.kick_distance_yards') }} as kick_angle_vertical,
+    {{ get_kick_angle_horizontal("p.kick_distance_yards") }} as kick_angle_horizontal,
+    {{ get_kick_angle_vertical("p.kick_distance_yards") }} as kick_angle_vertical,
     {{ convert_radians_to_degrees(
-        get_kick_angle_horizontal('p.kick_distance_yards')
+        get_kick_angle_horizontal("p.kick_distance_yards")
      ) }} as kick_angle_horizontal_degrees,
     {{ convert_radians_to_degrees(
-        get_kick_angle_vertical('p.kick_distance_yards')
+        get_kick_angle_vertical("p.kick_distance_yards")
      ) }} as kick_angle_vertical_degrees
 
 from

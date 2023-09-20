@@ -1,16 +1,23 @@
 {{
     config(
-        materialized = 'table',
-        unique_key = 'player_id'
+        materialized = "table",
+        unique_key = "player_id"
     )
 }}
 with players as (
 
-    select distinct
+    select
         player_id,
-        player_name_full,
-        player_name_abbr 
-    from {{ ref('stg_rosters') }}
+        max(player_name) as player_name,
+        avg(player_height) as avg_player_height,
+        avg(player_weight) as avg_player_weight
+    from {{ ref("stg_rosters") }}
+    where
+        player_id is not null
+        and
+        player_name is not null
+    group by
+        1
 
 )
 select

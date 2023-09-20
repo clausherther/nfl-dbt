@@ -27,29 +27,29 @@ models:
           tests:
             - not_null
             - relationships:
-                to: ref('games')
+                to: ref("games")
                 field: game_id
-                
+
         - name: home_team_code
           tests:
             - relationships:
-                to: ref('teams')
+                to: ref("teams")
                 field: team_code
         - name: away_team_code
           tests:
             - relationships:
-                to: ref('teams')
+                to: ref("teams")
                 field: team_code
         - name: off_team_code
           tests:
             - relationships:
-                to: ref('teams')
+                to: ref("teams")
                 field: team_code
         - name: off_team_type
         - name: def_team_code
           tests:
             - relationships:
-                to: ref('teams')
+                to: ref("teams")
                 field: team_code
         - name: side_of_field
         - name: yardline_100

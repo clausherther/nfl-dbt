@@ -1,12 +1,12 @@
-name: 'nfl_dbt'
-version: '1.0'
+name: "nfl_dbt"
+version: "1.0"
 
-profile: 'nfl'
+profile: "nfl"
 
-source-paths: ["models"]
-analysis-paths: ["analysis"] 
+model-paths: ["models"]
+analysis-paths: ["analysis"]
 test-paths: ["tests"]
-data-paths: ["data"]
+seed-paths: ["data"]
 macro-paths: ["macros"]
 
 target-path: "target"
@@ -14,22 +14,21 @@ clean-targets:
     - "target"
     - "dbt_modules"
 
-require-dbt-version: ">=0.15.1"
+require-dbt-version: ">=1.2.0"
 
 quoting:
     database: true
     identifier: false
     schema: false
 
-models:
-    persist_docs:
-        relation: true
+vars:
+    dbt_date:time_zone: "UTC"
+    incremental_days: 30
+    current_season: 2023
 
+models:
     nfl_dbt:
         staging:
             schema: staging
         analysis:
             schema: analysis
-    vars:
-        dbt_date:time_zone: 'UTC'
-        incremental_days: 30

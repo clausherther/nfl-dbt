@@ -7,6 +7,3 @@ models:
         tests:
           - unique
           - not_null
-      - name: consolidated_team_code
-        tests:
-          - not_null
