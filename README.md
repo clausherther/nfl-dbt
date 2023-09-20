@@ -14,7 +14,8 @@ The `nflverse-data` repo is updated with some regularity, but since this is a vo
 
 ### XA (Transformed Aggregates)
 These models are aggregates of one or more of the models above:
-- `xa_field_goals`: field goal plays only with additional information about kick angle
+- `xa_field_goals`: field goal plays only with additional information about kick angle, to help model field goal success probabilities (e.g. https://calogica.com/pymc3/python/2020/01/10/nfl-field-goals-bayes.html)
+- `xa_fourth_downs`: fourth down, non-field goal attemp plays only, to help with fourth-down-conversion modeling (e.g. https://calogica.com/pymc3/python/2019/12/08/nfl-4thdown-attempts.html)
 
 
 ### Notes 
@@ -22,27 +23,26 @@ These models are aggregates of one or more of the models above:
 - any duplicate plays (likely a result of the scraping process) are removed from `plays`
 
 ## Data Load
-The repo assumes that the raw scraped data has been loaded to either a **PostgreSQL** or **BigQuery** database, with one raw file corresponding to a single table in a database called `raw`.
+The repo assumes that the raw scraped data has been loaded to a **BigQuery** database, with one raw file corresponding to a single table in a database called `raw`.
 
 The included Python script [`extract_load`](extract_load) is intended to do the following:
-- Clone and/or locally refresh the `nflscrapR-data` repo
-- Create empty tables in a BigQuery or Postgres instance
-- Load raw data files to Postgres using a `dbt run-operation` to load each file using Postgres' `copy` command
+- ~Clone and/or locally refresh the `nflverse-data` repo~ (TBD)
+- Create empty tables in a BigQuery instance
+- Load raw data files to BigQuery using a `bq load` job to load each file
 
 The script uses the connection info defined in your local `~/.dbt/profiles.yml` file and needs to be configured with the appropriate profile name and target to use:
 
 E.g.:
-```yaml
+```python
 dbt_profile_name = "nfl"
-dbt_target_name = "pg_local"
+dbt_target_name = "bq"
 ```
-The load portion currently only works for Postgres and BigQuery, but could probably be extended to work with Snowflake and Redshift (:OOF:) as well.
+The load portion currently only works for BigQuery, but could probably be extended to work with Snowflake and Redshift (:OOF:) as well.
 
 ## Future Work
 The following items would make great natural extensions and improvements to the repo:
-- Add support for Snowflake and Redshift
+- Add support for Snowflake
 - Add report models to more easily enable analytical models:
     - Player stats
     - Game stats
     - Season stats
-- Remove dependency on `nflscrapR-data` and include `R` scripts to scrape the data independently
