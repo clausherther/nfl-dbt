@@ -8,7 +8,7 @@ The `nflverse-data` repo is updated with some regularity, but since this is a vo
 - `dates`: list of all game dates by season and season type (`PRE`, `REG`, `POST`)
 - `games`: game id, dates, teams and final scores by game 
 - `players`: player id and name for every player
-- `plays`: combines play data from all available seasons (2009 to 2019) into a single table for easier analysis
+- `plays`: combines play data from all available seasons (1999 to most current season) into a single table for easier analysis
 - `teams`: team code and consolidated code, in case of team moves of renames
 - `teams_players`: team rosters by season, showing player and (primary) position for the season
 
