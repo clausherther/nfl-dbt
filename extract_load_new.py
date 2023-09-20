@@ -14,6 +14,7 @@ from sqlalchemy.types import Integer, String, TIMESTAMP
 
 num_cores = multiprocessing.cpu_count()
 N_JOBS = min(num_cores, 8)
+FIELD_SEP = ","
 
 
 def get_parsed_args():
@@ -34,6 +35,22 @@ def get_parsed_args():
         nargs="+",
         required=False,
         help="Years to process, e.g. 2022 2023",
+    )
+
+    parser.add_argument(
+        "-np",
+        "--no_prep",
+        action="store_true",
+        required=False,
+        help="If set, skip data prep",
+    )
+
+    parser.add_argument(
+        "-nl",
+        "--no_load",
+        action="store_true",
+        required=False,
+        help="If set, skip data load",
     )
 
     args = parser.parse_args()
@@ -61,7 +78,13 @@ def get_data(file_path):
 def save_df(df, file_path):
 
     # Path(file_path).parents[0].mkdir(parents=True, exist_ok=True)
-    df.to_csv(file_path, index=False, sep="|", compression="gzip")
+    df.to_csv(
+        file_path,
+        index=False,
+        sep=FIELD_SEP,
+        quoting=csv.QUOTE_MINIMAL,
+        compression="gzip",
+    )
 
 
 def fix_dtypes(df):
@@ -78,13 +101,12 @@ def fix_dtypes(df):
         #     dtypes[col] = TIMESTAMP
         # # elif df.dtypes[col] == "O":
         # else:
-        df[col] = df[col].fillna("")
+        # df[col] = df[col].fillna("")
 
         dtypes[col] = String()
 
-    df["desc"] = ""
-
-    df = df.replace(r"\n", " ", regex=True)
+    if "desc" in df.columns:
+        df.drop(columns=["desc"], inplace=True)
 
     return df, dtypes
 
@@ -101,7 +123,7 @@ def create_empty_table(engine, df, dtypes, table_name, schema_name, replace=Fals
         drop_sql = f"DROP TABLE IF EXISTS {schema_name}.{table_name};"
 
     create_sql = create_sql.replace('"', "")
-    create_sql = create_sql.replace("desc ", '"desc" ')
+    # create_sql = create_sql.replace("desc ", '"desc" ')
 
     try:
         with engine.connect() as con:
@@ -283,7 +305,7 @@ def data_load_bigquery(load_config, sources_list, years_list):
             raw_file_path = load_file.resolve()
             print(f"Loading {raw_file_path}...")
 
-            bq_cmd = f'bq load --project_id {load_database} --dataset_id {load_schema} --replace --skip_leading_rows 1 --field_delimiter="|" --source_format CSV {table_name} {raw_file_path}'
+            bq_cmd = f'bq load --project_id {load_database} --dataset_id {load_schema} --replace --skip_leading_rows 1 --field_delimiter="{FIELD_SEP}" --source_format CSV {table_name} {raw_file_path}'
 
             print(bq_cmd)
             os.system(bq_cmd)
@@ -344,8 +366,8 @@ def main():
 
     args = get_parsed_args()
 
-    do_prep = True
-    do_load = True
+    do_prep = not args.no_prep
+    do_load = not args.no_load
 
     # base_dir, load_dir, data_dir, file_filter, db_type, db_host, db_user, db_password, load_database, load_schema, engine
     load_config = get_load_config()
