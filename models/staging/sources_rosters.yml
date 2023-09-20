@@ -2,7 +2,7 @@ version: 2
 
 sources:
   - name: raw_roster
-    schema: raw_new
+    schema: raw
 
     quoting:
       database: true

@@ -2,7 +2,7 @@ version: 2
 
 sources:
   - name: raw_pbp
-    schema: raw_new
+    schema: raw
 
     quoting:
       database: true
