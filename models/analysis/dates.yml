@@ -5,44 +5,47 @@ models:
       columns:
         - name: game_date
           tests:
-            - not_null
-            - unique
+            - dbt_expectations.expect_column_values_to_be_unique
+            - dbt_expectations.expect_column_values_to_not_be_null
         - name: season_nbr
           tests:
-            - not_null
+            - dbt_expectations.expect_column_values_to_not_be_null
+            - dbt_expectations.expect_column_values_to_be_between:
+                min_value: 1999
+                max_value: "{{ var('current_season') }}"
         - name: season_type_code
           tests:
-            - not_null
+            - dbt_expectations.expect_column_values_to_not_be_null
         - name: season_code
           tests:
-            - not_null
+            - dbt_expectations.expect_column_values_to_not_be_null
         - name: season_start_date
           tests:
-            - not_null
+            - dbt_expectations.expect_column_values_to_not_be_null
         - name: season_type_start_date
           tests:
-            - not_null
+            - dbt_expectations.expect_column_values_to_not_be_null
         - name: week_nbr
           tests:
-            - not_null
+            - dbt_expectations.expect_column_values_to_not_be_null
         - name: season_week_code
           tests:
-            - not_null
+            - dbt_expectations.expect_column_values_to_not_be_null
         - name: day_of_week
           tests:
-            - not_null
+            - dbt_expectations.expect_column_values_to_not_be_null
         - name: day_of_week_name
           tests:
-            - not_null
+            - dbt_expectations.expect_column_values_to_not_be_null
         - name: day_of_week_name_short
           tests:
-            - not_null
+            - dbt_expectations.expect_column_values_to_not_be_null
         - name: month_of_year
           tests:
-            - not_null
+            - dbt_expectations.expect_column_values_to_not_be_null
         - name: month_name
           tests:
-            - not_null
+            - dbt_expectations.expect_column_values_to_not_be_null
         - name: month_name_short
           tests:
-            - not_null
+            - dbt_expectations.expect_column_values_to_not_be_null

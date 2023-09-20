@@ -2,17 +2,26 @@ version: 2
 
 models:
   - name: xa_fourth_downs
+    tests:
+      - dbt_expectations.expect_table_row_count_to_be_between:
+          min_value: 100
     columns:
       - name: play_key
         tests:
-          - unique
-          - not_null
+          - dbt_expectations.expect_column_values_to_be_unique
+          - dbt_expectations.expect_column_values_to_not_be_null
+      - name: season_nbr
+        tests:
+          - dbt_expectations.expect_column_values_to_not_be_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 1999
+              max_value: "{{ var('current_season') }}"
       - name: yards_to_go
         tests:
-          - not_null
+          - dbt_expectations.expect_column_values_to_not_be_null
       - name: fourth_down_attempts
         tests:
-          - not_null
+          - dbt_expectations.expect_column_values_to_not_be_null
       - name: fourth_down_conversions
         tests:
-          - not_null
+          - dbt_expectations.expect_column_values_to_not_be_null

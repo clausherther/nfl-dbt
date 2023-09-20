@@ -5,35 +5,38 @@ models:
       columns:
         - name: game_id
           tests:
-            - unique
-            - not_null
+            - dbt_expectations.expect_column_values_to_be_unique
+            - dbt_expectations.expect_column_values_to_not_be_null
         - name: game_date
           tests:
-            - not_null
+            - dbt_expectations.expect_column_values_to_not_be_null
         - name: season_nbr
           tests:
-            - not_null
+            - dbt_expectations.expect_column_values_to_not_be_null
+            - dbt_expectations.expect_column_values_to_be_between:
+                min_value: 1999
+                max_value: "{{ var('current_season') }}"
         - name: season_type_code
           tests:
-            - not_null
+            - dbt_expectations.expect_column_values_to_not_be_null
         - name: week_nbr
           # tests:
-          #   - not_null
+          #   - dbt_expectations.expect_column_values_to_not_be_null
         - name: home_team_code
           tests:
-            - not_null
+            - dbt_expectations.expect_column_values_to_not_be_null
             - relationships:
                 to: ref("teams")
                 field: team_code
         - name: away_team_code
           tests:
-            - not_null
+            - dbt_expectations.expect_column_values_to_not_be_null
             - relationships:
                 to: ref("teams")
                 field: team_code
         - name: home_score
           tests:
-            - not_null
+            - dbt_expectations.expect_column_values_to_not_be_null
         - name: away_score
           tests:
-            - not_null
+            - dbt_expectations.expect_column_values_to_not_be_null
