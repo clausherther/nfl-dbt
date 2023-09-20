@@ -3,42 +3,28 @@ version: 2
 models:
     - name: teams_players
       columns:
-        - name: player_key
+        - name: team_player_key
           tests:
-            - unique
-            - not_null
+            - dbt_expectations.expect_column_values_to_be_unique
+            - dbt_expectations.expect_column_values_to_not_be_null
         - name: season_nbr
           tests:
-            - not_null
-        - name: season_type_code
-          tests:
-            - not_null
-        - name: season_code
-          tests:
-            - not_null
+            - dbt_expectations.expect_column_values_to_not_be_null
 
         - name: player_id
           tests:
-          - not_null
+          - dbt_expectations.expect_column_values_to_not_be_null
           - relationships:
-              to: ref('players')
+              to: ref("players")
               field: player_id
 
-        - name: player_name_full
+        - name: player_name
           tests:
-            - not_null
-
-        - name: player_name_abbr
-          tests:
-            - not_null
+            - dbt_expectations.expect_column_values_to_not_be_null
 
         - name: team_code
           tests:
-            - not_null
+            - dbt_expectations.expect_column_values_to_not_be_null
             - relationships:
-                to: ref('teams')
+                to: ref("teams")
                 field: team_code
-
-        - name: position_code
-          tests:
-            - not_null

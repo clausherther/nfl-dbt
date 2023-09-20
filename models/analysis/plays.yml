@@ -5,51 +5,54 @@ models:
       columns:
         - name: play_key
           tests:
-            - unique
-            - not_null
+            - dbt_expectations.expect_column_values_to_be_unique
+            - dbt_expectations.expect_column_values_to_not_be_null
         - name: season_code
           tests:
-            - not_null
+            - dbt_expectations.expect_column_values_to_not_be_null
         - name: season_nbr
           tests:
-            - not_null
+            - dbt_expectations.expect_column_values_to_not_be_null
+            - dbt_expectations.expect_column_values_to_be_between:
+                min_value: 1999
+                max_value: "{{ var('current_season') }}"
         - name: season_type_code
           tests:
-            - not_null
+            - dbt_expectations.expect_column_values_to_not_be_null
         - name: game_date
           tests:
-            - not_null
+            - dbt_expectations.expect_column_values_to_not_be_null
         - name: play_time
         - name: play_id
           tests:
-            - not_null
+            - dbt_expectations.expect_column_values_to_not_be_null
         - name: game_id
           tests:
-            - not_null
+            - dbt_expectations.expect_column_values_to_not_be_null
             - relationships:
-                to: ref('games')
+                to: ref("games")
                 field: game_id
-                
+
         - name: home_team_code
           tests:
             - relationships:
-                to: ref('teams')
+                to: ref("teams")
                 field: team_code
         - name: away_team_code
           tests:
             - relationships:
-                to: ref('teams')
+                to: ref("teams")
                 field: team_code
         - name: off_team_code
           tests:
             - relationships:
-                to: ref('teams')
+                to: ref("teams")
                 field: team_code
         - name: off_team_type
         - name: def_team_code
           tests:
             - relationships:
-                to: ref('teams')
+                to: ref("teams")
                 field: team_code
         - name: side_of_field
         - name: yardline_100

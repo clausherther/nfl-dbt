@@ -2,45 +2,37 @@ version: 2
 
 sources:
   - name: raw_roster
-    schema: raw
-    
+    schema: raw_new
+
     quoting:
       database: true
       schema: true
       identifier: true
-      
+
     tables:
-      - name: pre_roster_2009
-      - name: pre_roster_2010
-      - name: pre_roster_2011
-      - name: pre_roster_2012
-      - name: pre_roster_2013
-      - name: pre_roster_2014
-      - name: pre_roster_2015
-      - name: pre_roster_2016
-      - name: pre_roster_2017
-      - name: pre_roster_2018
-      - name: pre_roster_2019
+      - name: roster_1999
+      - name: roster_2000
+      - name: roster_2001
+      - name: roster_2002
+      - name: roster_2003
+      - name: roster_2004
+      - name: roster_2005
+      - name: roster_2006
+      - name: roster_2007
+      - name: roster_2008
+      - name: roster_2009
+      - name: roster_2010
+      - name: roster_2011
+      - name: roster_2012
+      - name: roster_2013
+      - name: roster_2014
+      - name: roster_2015
+      - name: roster_2016
+      - name: roster_2017
+      - name: roster_2018
+      - name: roster_2019
+      - name: roster_2020
+      - name: roster_2021
+      - name: roster_2022
+      - name: roster_2023
 
-      - name: reg_roster_2009
-      - name: reg_roster_2010
-      - name: reg_roster_2011
-      - name: reg_roster_2012
-      - name: reg_roster_2013
-      - name: reg_roster_2014
-      - name: reg_roster_2015
-      - name: reg_roster_2016
-      - name: reg_roster_2017
-      - name: reg_roster_2018
-      - name: reg_roster_2019
-
-      - name: post_roster_2009
-      - name: post_roster_2010
-      - name: post_roster_2011
-      - name: post_roster_2012
-      - name: post_roster_2013
-      - name: post_roster_2014
-      - name: post_roster_2015
-      - name: post_roster_2016
-      - name: post_roster_2017
-      - name: post_roster_2018

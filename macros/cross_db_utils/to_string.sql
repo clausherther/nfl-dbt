@@ -1,3 +1,3 @@
 {%- macro to_string(val) -%}
-{{ dbt_utils.safe_cast(val, dbt_utils.type_string()) }}
+{{ dbt.safe_cast(val, dbt.type_string()) }}
 {%- endmacro -%}

@@ -1,5 +1,5 @@
 {% macro left(string_text, length_expression) -%}
-    {{ adapter_macro('left', string_text, length_expression) }}
+    {{ adapter.dispatch("left")(string_text, length_expression) }}
 {% endmacro %}
 
 {% macro default__left(string_text, length_expression) %}
@@ -8,14 +8,14 @@
         {{ string_text }},
         {{ length_expression }}
     )
-    
+
 {%- endmacro -%}
 
 {% macro bigquery__left(string_text, length_expression) %}
 
-    case when {{ length_expression }} = 0 
+    case when {{ length_expression }} = 0
         then ''
-    else 
+    else
         substr(
             {{ string_text }},
             1,
@@ -27,9 +27,9 @@
 
 {% macro snowflake__left(string_text, length_expression) %}
 
-    case when {{ length_expression }} = 0 
+    case when {{ length_expression }} = 0
         then ''
-    else 
+    else
         left(
             {{ string_text }},
             {{ length_expression }}

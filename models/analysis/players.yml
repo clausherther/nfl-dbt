@@ -6,11 +6,8 @@ models:
     columns:
     - name: player_id
       tests:
-      - unique
-      - not_null
-    - name: player_name_full
+        - dbt_expectations.expect_column_values_to_be_unique
+        - dbt_expectations.expect_column_values_to_not_be_null
+    - name: player_name
       tests:
-        - not_null
-    - name: player_name_abbr
-      tests:
-        - not_null
+        - dbt_expectations.expect_column_values_to_not_be_null
