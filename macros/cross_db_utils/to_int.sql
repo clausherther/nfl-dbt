@@ -1,3 +1,5 @@
 {%- macro to_int(val) -%}
-{{ dbt.safe_cast(val, dbt.type_int()) }}
+cast(
+    coalesce({{ dbt.safe_cast(val, "numeric") }}, 0) as {{ dbt.type_int() }}
+)
 {%- endmacro -%}
