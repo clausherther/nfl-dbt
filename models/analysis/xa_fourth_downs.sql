@@ -1,16 +1,7 @@
-{{
-    config(
-        materialized = "incremental",
-        unique_key = "play_key",
-        partition_by = {"field": "game_date", "data_type": "date", "granularity": "day"}
-    )
-}}
+{{ config(materialized = "table") }}
+
 with plays as (
     select * from {{ ref("plays") }}
-    {% if is_incremental() %}
-    where
-        game_date >= cast({{ incremental_refresh_date() }} as date)
-    {% endif %}
 ),
 dates as (
     select * from {{ ref("dates") }}
@@ -42,15 +33,13 @@ fourth_downs as (
         p.yardline_100,
         p.yards_gained,
         1 as fourth_down_attempts,
-        case when p.is_fourth_down_converted = true then 1 else 0 end as fourth_down_conversions
-    from
-        plays p
-        inner join
-        dates d on p.game_date = d.game_date
+        case when p.is_fourth_down_converted then 1 else 0 end as fourth_down_conversions
+    from plays p
+    inner join dates d
+    on p.game_date = d.game_date
     where
-        p.is_field_goal_attempt = false
-        and
-        p.is_fourth_down_attempt = true
+        not p.is_field_goal_attempt and
+        p.is_fourth_down_attempt
 
 )
 select

@@ -1,14 +1,6 @@
-{{
-    config(
-        materialized = "table"
-    )
-}}
+{{ config(materialized = "table") }}
 
-{% if is_incremental() %}
-{%- set years = [var("current_season") ] -%}
-{% else %}
 {%- set years = ["2009","2010","2011","2012","2013","2014","2015","2016","2017","2018","2019", "2020", "2021", "2022", "2023"]-%}
-{% endif %}
 
 with raw_roster as (
     {% for year in years %}
@@ -43,7 +35,7 @@ bad_ids as (
     from
         raw_roster
     where
-        player_id not like "00-%"
+        player_id not like {{ dbt.string_literal("00-%") }}
     group by 1,2,3
 
 ),
@@ -62,7 +54,7 @@ bad_id_fix_passers as (
             on r.passer_player_name = b.player_name
                 and r.team_code = b.team_code
     where
-        b.position_code = "QB"
+        b.position_code = {{ dbt.string_literal("QB") }}
 
 ),
 bad_id_fix_receivers as (
@@ -78,7 +70,7 @@ bad_id_fix_receivers as (
         inner join
         bad_ids b
             on r.receiver_player_name = b.player_name
-                and b.position_code != "QB"
+                and b.position_code != {{ dbt.string_literal("QB") }}
                 and r.team_code = b.team_code
 ),
 bad_id_fix as (

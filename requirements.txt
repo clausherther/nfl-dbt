@@ -1,3 +1,2 @@
-pandas>=0.25.2
-pybigquery>=0.4.11
-SQLAlchemy>=1.3.10
+PyYAML>=6.0.1
+dbt-duckdb>=1.6.0

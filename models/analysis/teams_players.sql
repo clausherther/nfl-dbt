@@ -22,10 +22,8 @@ select
 from
     dedupe_rosters p
 where
-    p.rn = 1
-    and
-    p.player_id is not null
-    and
+    p.rn = 1 and
+    p.player_id is not null and
     p.player_name is not null
 order by
     p.season_nbr,

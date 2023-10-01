@@ -1,16 +1,7 @@
-{{
-    config(
-        materialized = "incremental",
-        unique_key = "play_key",
-        partition_by = {"field": "game_date", "data_type": "date", "granularity": "day"}
-    )
-}}
+{{ config(materialized = "table") }}
+
 with plays as (
     select * from {{ ref("plays") }}
-    {% if is_incremental() %}
-    where
-        game_date >= cast({{ incremental_refresh_date() }} as date)
-    {% endif %}
 ),
 dates as (
     select * from {{ ref("dates") }}
@@ -43,15 +34,13 @@ field_goal_kicks as (
         p.field_goal_result,
         p.is_field_goal_success,
         1 as field_goals,
-        case when p.is_field_goal_success = true then 1 else 0 end as successful_field_goals
-    from
-        plays p
-        inner join
-        dates d on p.game_date = d.game_date
+        case when p.is_field_goal_success then 1 else 0 end as successful_field_goals
+    from plays p
+    inner join dates d
+    on p.game_date = d.game_date
     where
-        p.is_field_goal_attempt = true
-        and
-        p.is_extra_point_attempt = false
+        p.is_field_goal_attempt and
+        not p.is_extra_point_attempt
 
 )
 select

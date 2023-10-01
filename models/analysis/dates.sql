@@ -1,8 +1,5 @@
-{{
-    config(
-        materialized = "table"
-    )
-}}
+{{ config(materialized = "table") }}
+
 with game_dates as (
 
     select distinct

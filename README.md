@@ -1,6 +1,11 @@
 # NFL Play-by-play dbt models
 
+## Parent Project nfl-dbt
+
+This repo is a small project to port Claus Herther's [nfl-dbt](https://github.com/clausherther/nfl-dbt) to [DuckDB](https://duckdb.org/) which is great for running analytical queries locally. Most of this README is from that project since the source files and transformations are mostly unchanged.
+
 This repo contains [dbt](https://www.getdbt.com) models to transform NFL Play-by-Play (pbp) data sourced from [https://github.com/nflverse/nflverse-data](https://github.com/nflverse/nflverse-data) into analytical models.
+
 ## Update Frequency
 The `nflverse-data` repo is updated with some regularity, but since this is a voluntary and free resource, we can't rely on play data being updated weekly. So, this dataset and the analytical models are best used for teaching and model building purposes, and perhaps less so for weekly decision on sports bets etc.
 
@@ -23,26 +28,22 @@ These models are aggregates of one or more of the models above:
 - any duplicate plays (likely a result of the scraping process) are removed from `plays`
 
 ## Data Load
-The repo assumes that the raw scraped data has been loaded to a **BigQuery** database, with one raw file corresponding to a single table in a database called `raw`.
-
-The included Python script [`extract_load`](extract_load) is intended to do the following:
-- ~Clone and/or locally refresh the `nflverse-data` repo~ (TBD)
-- Create empty tables in a BigQuery instance
-- Load raw data files to BigQuery using a `bq load` job to load each file
-
-The script uses the connection info defined in your local `~/.dbt/profiles.yml` file and needs to be configured with the appropriate profile name and target to use:
-
-E.g.:
-```python
-dbt_profile_name = "nfl"
-dbt_target_name = "bq"
+To load source files from [https://github.com/nflverse/nflverse-data](https://github.com/nflverse/nflverse-data) into a local DuckDB database:
 ```
-The load portion currently only works for BigQuery, but could probably be extended to work with Snowflake and Redshift (:OOF:) as well.
+python load.py
+```
 
-## Future Work
-The following items would make great natural extensions and improvements to the repo:
-- Add support for Snowflake
-- Add report models to more easily enable analytical models:
-    - Player stats
-    - Game stats
-    - Season stats
+Then create a dbt profile in `~/.dbt/profiles.yml`:
+```yaml
+nfl:
+  target: duckdb
+  outputs:
+    duckdb:
+      type: duckdb
+      path: '/absolute/path/to/this/repo/nfl.duckdb'
+```
+
+And to run the DBT pipeline:
+```
+dbt run
+```

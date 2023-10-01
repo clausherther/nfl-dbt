@@ -1,6 +1,7 @@
 {%- macro get_play_by_play_data(season) -%}
 
-{%- set bool_cols = ["shotgun",
+{%- set bool_cols = [
+        "shotgun",
         "no_huddle",
         "qb_dropback",
         "qb_kneel",
@@ -64,7 +65,8 @@
         "defensive_extra_point_conv"
         ]
 -%}
-{%- set player_cols = ["passer_player_id",
+{%- set player_cols = [
+        "passer_player_id",
         "passer_player_name",
         "receiver_player_id",
         "receiver_player_name",
@@ -164,7 +166,7 @@
         {{ fix_team_names("away_team") }} as away_team_code,
         {{ fix_team_names("posteam") }} as off_team_code,
         posteam_type as off_team_type,
-        case when posteam_type = "home" then true else false end as is_home_team,
+        case when posteam_type = {{ dbt.string_literal("home") }} then true else false end as is_home_team,
         {{ fix_team_names("defteam") }} as def_team_code,
         side_of_field,
         game_half,
@@ -184,16 +186,17 @@
         {{ to_int("ydstogo") }} as yards_to_go,
         {{ to_int("ydsnet") }} as net_yards,
         {{ to_int("yards_gained") }} as yards_gained,
-        "" as play_description,
-        case when {{ to_int("down") }}  = 4 and play_type in ("run", "pass") then true else false end as is_fourth_down_attempt,
-        {{ to_int("pass_length") }} as pass_length,
+        "desc" as play_description,
+        case when {{ to_int("down") }}  = 4 and play_type in ({{ dbt.string_literal("run") }}, {{ dbt.string_literal("pass") }}) then true else false end as is_fourth_down_attempt,
+        case when pass_length not in ({{ dbt.string_literal("short") }}, {{ dbt.string_literal("deep")}}) then {{ to_int("pass_length") }} end as pass_length,
+        case when pass_length in ({{ dbt.string_literal("short") }}, {{ dbt.string_literal("deep")}}) then pass_length end as pass_length_description,
         pass_location,
         {{ to_int("air_yards") }} as air_yards,
         {{ to_int("yards_after_catch") }} as yards_after_catch,
         run_location,
         run_gap,
         field_goal_result,
-        case when field_goal_result = "made" then true else false end as is_field_goal_success,
+        case when field_goal_result = {{ dbt.string_literal("made") }} then true else false end as is_field_goal_success,
         {{ to_int("kick_distance") }} as kick_distance,
         extra_point_result,
         two_point_conv_result,

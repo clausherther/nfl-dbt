@@ -4,3 +4,4 @@ dbt_modules/
 dbt_packages
 logs/
 data_prep/nflscrapR-data
+*.duckdb

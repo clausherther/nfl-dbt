@@ -1,16 +1,6 @@
-{{
-    config(
-        materialized = "incremental",
-        unique_key = "play_key",
-        partition_by = {"field": "game_date", "data_type": "date", "granularity": "day"}
-    )
-}}
+{{ config(materialized = "table") }}
 
-{% if is_incremental() %}
-{%- set years = [var("current_season") ] -%}
-{% else %}
 {%- set years = ["2009","2010","2011","2012","2013","2014","2015","2016","2017","2018","2019", "2020", "2021", "2022", "2023"]-%}
-{% endif %}
 
 with raw_pbp as (
     {% for year in years %}
@@ -40,10 +30,5 @@ select
 from
     new_plays r
 where
-    off_team_code is not null
-    and
+    off_team_code is not null and
     def_team_code is not null
-    {% if is_incremental() %}
-    and
-    game_date >= cast({{ incremental_refresh_date() }} as date)
-{% endif %}

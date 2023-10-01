@@ -1,10 +1,5 @@
-{{
-    config(
-        materialized = "incremental",
-        unique_key = "game_id",
-        partition_by = {"field": "game_date", "data_type": "date", "granularity": "day"}
-    )
-}}
+{{ config(materialized = "table") }}
+
 with games as (
     select
         game_id as game_id,
@@ -18,13 +13,8 @@ with games as (
         max(total_away_score) as away_score
     from
         {{ ref("stg_play_by_play") }}
-    {% if is_incremental() %}
-    where
-        game_date >= cast({{ incremental_refresh_date() }} as date)
-    {% endif %}
     group by
         1
-
 )
 select
     r.*,
