@@ -1,0 +1,25 @@
+version: 2
+
+models:
+
+  - name: injury_reports
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - season_nbr
+            - week_nbr
+            - player_id
+            - team_code
+    columns:
+      - name: season_nbr
+        tests:
+          - dbt_expectations.expect_column_values_to_not_be_null
+      - name: week_nbr
+        tests:
+          - dbt_expectations.expect_column_values_to_not_be_null
+      - name: player_id
+        tests:
+          - dbt_expectations.expect_column_values_to_not_be_null
+      - name: team_code
+        tests:
+          - dbt_expectations.expect_column_values_to_not_be_null

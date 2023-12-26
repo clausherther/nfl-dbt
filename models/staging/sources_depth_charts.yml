@@ -1,0 +1,20 @@
+version: 2
+
+sources:
+  - name: raw_depth_charts
+    schema: raw
+
+    quoting:
+      database: true
+      schema: true
+      identifier: true
+
+    tables:
+      - name: depth_charts_2016
+      - name: depth_charts_2017
+      - name: depth_charts_2018
+      - name: depth_charts_2019
+      - name: depth_charts_2020
+      - name: depth_charts_2021
+      - name: depth_charts_2022
+      - name: depth_charts_2023

@@ -161,7 +161,7 @@
         {# cast(time as {{ dbt.type_timestamp() }}) as  #}
         {{ to_int("play_id") }} as play_id,
         game_id as game_id,
-        {{ to_int("split(game_id, '_')[1]") }} as week_nbr,
+        {{ to_int("split(game_id, '_')[2]") }} as week_nbr,
         {{ fix_team_names("home_team") }} as home_team_code,
         {{ fix_team_names("away_team") }} as away_team_code,
         {{ fix_team_names("posteam") }} as off_team_code,

@@ -25,6 +25,15 @@ vars:
     dbt_date:time_zone: "UTC"
     incremental_days: 30
     current_season: 2023
+    years: 
+        - 2016
+        - 2017
+        - 2018
+        - 2019
+        - 2020
+        - 2021
+        - 2022
+        - 2023
 
 models:
     nfl_dbt:

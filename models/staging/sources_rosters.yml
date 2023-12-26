@@ -10,22 +10,6 @@ sources:
       identifier: true
 
     tables:
-      - name: roster_1999
-      - name: roster_2000
-      - name: roster_2001
-      - name: roster_2002
-      - name: roster_2003
-      - name: roster_2004
-      - name: roster_2005
-      - name: roster_2006
-      - name: roster_2007
-      - name: roster_2008
-      - name: roster_2009
-      - name: roster_2010
-      - name: roster_2011
-      - name: roster_2012
-      - name: roster_2013
-      - name: roster_2014
       - name: roster_2015
       - name: roster_2016
       - name: roster_2017
@@ -35,4 +19,3 @@ sources:
       - name: roster_2021
       - name: roster_2022
       - name: roster_2023
-

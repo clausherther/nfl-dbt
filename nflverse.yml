@@ -1,23 +1,6 @@
 - name: pbp
   base_url: https://github.com/nflverse/nflverse-data/releases/download/pbp
   files:
-    - play_by_play_1999.parquet
-    - play_by_play_2000.parquet
-    - play_by_play_2001.parquet
-    - play_by_play_2002.parquet
-    - play_by_play_2003.parquet
-    - play_by_play_2004.parquet
-    - play_by_play_2005.parquet
-    - play_by_play_2006.parquet
-    - play_by_play_2007.parquet
-    - play_by_play_2008.parquet
-    - play_by_play_2009.parquet
-    - play_by_play_2010.parquet
-    - play_by_play_2011.parquet
-    - play_by_play_2012.parquet
-    - play_by_play_2013.parquet
-    - play_by_play_2014.parquet
-    - play_by_play_2015.parquet
     - play_by_play_2016.parquet
     - play_by_play_2017.parquet
     - play_by_play_2018.parquet
@@ -30,23 +13,6 @@
 - name: rosters
   base_url: https://github.com/nflverse/nflverse-data/releases/download/rosters
   files:
-    - roster_1999.parquet
-    - roster_2000.parquet
-    - roster_2001.parquet
-    - roster_2002.parquet
-    - roster_2003.parquet
-    - roster_2004.parquet
-    - roster_2005.parquet
-    - roster_2006.parquet
-    - roster_2007.parquet
-    - roster_2008.parquet
-    - roster_2009.parquet
-    - roster_2010.parquet
-    - roster_2011.parquet
-    - roster_2012.parquet
-    - roster_2013.parquet
-    - roster_2014.parquet
-    - roster_2015.parquet
     - roster_2016.parquet
     - roster_2017.parquet
     - roster_2018.parquet
@@ -55,3 +21,68 @@
     - roster_2021.parquet
     - roster_2022.parquet
     - roster_2023.parquet
+
+- name: players
+  base_url: https://github.com/nflverse/nflverse-data/releases/download/players
+  files:
+    - players.parquet
+
+- name: pbp_participation
+  base_url: https://github.com/nflverse/nflverse-data/releases/download/pbp_participation
+  files:
+    - pbp_participation_2016.parquet
+    - pbp_participation_2017.parquet
+    - pbp_participation_2018.parquet
+    - pbp_participation_2019.parquet
+    - pbp_participation_2020.parquet
+    - pbp_participation_2021.parquet
+    - pbp_participation_2022.parquet
+    - pbp_participation_2023.parquet
+
+- name: injuries
+  base_url: https://github.com/nflverse/nflverse-data/releases/download/injuries
+  files:
+    - injuries_2016.parquet
+    - injuries_2017.parquet
+    - injuries_2018.parquet
+    - injuries_2019.parquet
+    - injuries_2020.parquet
+    - injuries_2021.parquet
+    - injuries_2022.parquet
+    - injuries_2023.parquet
+
+- name: depth_charts
+  base_url: https://github.com/nflverse/nflverse-data/releases/download/depth_charts
+  files:
+    - depth_charts_2016.parquet
+    - depth_charts_2017.parquet
+    - depth_charts_2018.parquet
+    - depth_charts_2019.parquet
+    - depth_charts_2020.parquet
+    - depth_charts_2021.parquet
+    - depth_charts_2022.parquet
+    - depth_charts_2023.parquet
+
+- name: player_stats
+  base_url: https://github.com/nflverse/nflverse-data/releases/download/player_stats
+  files:
+    - player_stats_2016.parquet
+    - player_stats_2017.parquet
+    - player_stats_2018.parquet
+    - player_stats_2019.parquet
+    - player_stats_2020.parquet
+    - player_stats_2021.parquet
+    - player_stats_2022.parquet
+    - player_stats_2023.parquet
+
+- name: player_stats_def
+  base_url: https://github.com/nflverse/nflverse-data/releases/download/player_stats
+  files:
+    - player_stats_def_2016.parquet
+    - player_stats_def_2017.parquet
+    - player_stats_def_2018.parquet
+    - player_stats_def_2019.parquet
+    - player_stats_def_2020.parquet
+    - player_stats_def_2021.parquet
+    - player_stats_def_2022.parquet
+    - player_stats_def_2023.parquet

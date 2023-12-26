@@ -7,6 +7,9 @@
 with rosters as (
     select * from {{ ref("stg_rosters") }}
 ),
+players as (
+    select * from {{ ref("players") }}
+),
 dedupe_rosters as (
 
     select
@@ -16,16 +19,17 @@ dedupe_rosters as (
         rosters
 )
 select
-    {{ generate_surrogate_key(["p.season_nbr", "p.team_code", "p.player_id"])}} as team_player_key,
-    p.*,
+    {{ generate_surrogate_key(["r.season_nbr", "r.team_code", "r.player_id"])}} as team_player_key,
+    r.*,
     {{ dbt_housekeeping() }}
-from
-    dedupe_rosters p
+from dedupe_rosters r
+join players p
+    on p.player_id = r.player_id
 where
-    p.rn = 1 and
-    p.player_id is not null and
-    p.player_name is not null
+    r.rn = 1 and
+    r.player_id is not null and
+    r.player_name is not null
 order by
-    p.season_nbr,
-    p.team_code,
-    p.player_id
+    r.season_nbr,
+    r.team_code,
+    r.player_id

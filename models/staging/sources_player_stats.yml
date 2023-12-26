@@ -1,0 +1,21 @@
+version: 2
+
+sources:
+  - name: raw_player_stats
+    schema: raw
+
+    quoting:
+      database: true
+      schema: true
+      identifier: true
+
+    tables:
+      - name: player_stats_2015
+      - name: player_stats_2016
+      - name: player_stats_2017
+      - name: player_stats_2018
+      - name: player_stats_2019
+      - name: player_stats_2020
+      - name: player_stats_2021
+      - name: player_stats_2022
+      - name: player_stats_2023

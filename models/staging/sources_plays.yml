@@ -10,23 +10,6 @@ sources:
       identifier: true
 
     tables:
-      - name: play_by_play_1999
-      - name: play_by_play_2000
-      - name: play_by_play_2001
-      - name: play_by_play_2002
-      - name: play_by_play_2003
-      - name: play_by_play_2004
-      - name: play_by_play_2005
-      - name: play_by_play_2006
-      - name: play_by_play_2007
-      - name: play_by_play_2008
-      - name: play_by_play_2009
-      - name: play_by_play_2010
-      - name: play_by_play_2011
-      - name: play_by_play_2012
-      - name: play_by_play_2013
-      - name: play_by_play_2014
-      - name: play_by_play_2015
       - name: play_by_play_2016
       - name: play_by_play_2017
       - name: play_by_play_2018

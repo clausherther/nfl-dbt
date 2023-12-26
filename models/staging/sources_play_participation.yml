@@ -1,0 +1,20 @@
+version: 2
+
+sources:
+  - name: raw_play_participation
+    schema: raw
+
+    quoting:
+      database: true
+      schema: true
+      identifier: true
+
+    tables:
+      - name: pbp_participation_2016
+      - name: pbp_participation_2017
+      - name: pbp_participation_2018
+      - name: pbp_participation_2019
+      - name: pbp_participation_2020
+      - name: pbp_participation_2021
+      - name: pbp_participation_2022
+      - name: pbp_participation_2023

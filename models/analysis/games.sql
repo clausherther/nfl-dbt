@@ -12,7 +12,7 @@ with games as (
         max(total_home_score) as home_score,
         max(total_away_score) as away_score
     from
-        {{ ref("stg_play_by_play") }}
+        {{ ref("stg_plays") }}
     group by
         1
 )

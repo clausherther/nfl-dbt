@@ -1,6 +1,6 @@
 {{ config(materialized = "table") }}
 
-{%- set years = ["2009","2010","2011","2012","2013","2014","2015","2016","2017","2018","2019", "2020", "2021", "2022", "2023"]-%}
+{%- set years = var("years") -%}
 
 with raw_roster as (
     {% for year in years %}
@@ -23,7 +23,7 @@ play_data as (
         r.home_team_code as team_code,
         r.season_nbr
     from
-        {{ ref("stg_play_by_play") }} r
+        {{ ref("stg_plays") }} r
 
 ),
 bad_ids as (
@@ -91,9 +91,9 @@ select
     {{ to_int("r.player_weight") }} as player_weight
 from
     raw_roster r
-    left outer join
-    bad_id_fix f
-        on r.player_name = f.player_name
-            and r.position_code = f.position_code
-            and r.team_code = f.team_code
-            and r.season_nbr = f.season_nbr
+    left join bad_id_fix f
+    on
+        r.player_name   = f.player_name and
+        r.position_code = f.position_code and
+        r.team_code     = f.team_code and
+        r.season_nbr    = f.season_nbr

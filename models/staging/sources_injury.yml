@@ -1,0 +1,20 @@
+version: 2
+
+sources:
+  - name: raw_injury
+    schema: raw
+
+    quoting:
+      database: true
+      schema: true
+      identifier: true
+
+    tables:
+      - name: injuries_2016
+      - name: injuries_2017
+      - name: injuries_2018
+      - name: injuries_2019
+      - name: injuries_2020
+      - name: injuries_2021
+      - name: injuries_2022
+      - name: injuries_2023
